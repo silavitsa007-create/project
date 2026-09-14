@@ -94,59 +94,58 @@ export const api = {
   updateProfile: (payload) =>
     apiFetch('/profile', { method: 'POST', body: JSON.stringify(payload) }),
 
-  adminDashboard: () => apiFetch('/admin/dashboard.php'),
+  adminDashboard: () => apiFetch('/admin/dashboard'),
 
-  adminBorrowRequests: () => apiFetch('/admin/borrow_requests.php'),
+  adminBorrowRequests: () => apiFetch('/admin/borrow-requests'),
 
   adminDecideBorrow: (borrowId, action) =>
-    apiFetch('/admin/borrow_requests.php', {
+    apiFetch('/admin/borrow-requests', {
       method: 'POST',
       body: JSON.stringify({ borrow_id: borrowId, action }),
     }),
 
-  adminReturns: () => apiFetch('/admin/returns.php'),
+  adminReturns: () => apiFetch('/admin/returns'),
 
   adminMarkReturned: (borrowId) =>
-    apiFetch('/admin/returns.php', { method: 'POST', body: JSON.stringify({ borrow_id: borrowId }) }),
+    apiFetch('/admin/returns', { method: 'POST', body: JSON.stringify({ borrow_id: borrowId }) }),
 
-  adminGetBooks: (keyword = '') =>
-    apiFetch(`/admin/books.php?keyword=${encodeURIComponent(keyword)}`),
+  adminGetBooks: () => apiFetch('/admin/books'),
 
   adminAddBook: (payload) =>
-    apiFetch('/admin/books.php', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'create', ...payload }) }),
 
   adminUpdateBook: (payload) =>
-    apiFetch('/admin/books.php', { method: 'PUT', body: JSON.stringify(payload) }),
+    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
 
   adminDeleteBook: (bookId) =>
-    apiFetch('/admin/books.php', { method: 'DELETE', body: JSON.stringify({ book_id: bookId }) }),
+    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'delete', book_id: bookId }) }),
 
-  adminGetCategories: () => apiFetch('/admin/categories.php'),
+  adminGetCategories: () => apiFetch('/admin/categories'),
 
   adminAddCategory: (categoryName) =>
-    apiFetch('/admin/categories.php', { method: 'POST', body: JSON.stringify({ category_name: categoryName }) }),
+    apiFetch('/admin/categories', { method: 'POST', body: JSON.stringify({ category_name: categoryName }) }),
 
   adminDeleteCategory: (categoryId) =>
-    apiFetch('/admin/categories.php', { method: 'DELETE', body: JSON.stringify({ category_id: categoryId }) }),
+    apiFetch('/admin/categories', { method: 'DELETE', body: JSON.stringify({ category_id: categoryId }) }),
 
   adminUploadCover: (bookId, file) => {
     const formData = new FormData();
     formData.append('book_id', bookId);
     formData.append('cover_image', file);
-    return apiFetchForm('/admin/upload_cover.php', formData);
+    return apiFetchForm('/admin/upload-cover', formData);
   },
 
-  adminGetUsers: () => apiFetch('/admin/users.php'),
+  adminGetUsers: () => apiFetch('/admin/users'),
 
   adminUpdateUser: (payload) =>
-    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
+    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
 
   adminToggleUserStatus: (userId) =>
-    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'toggle_status', user_id: userId }) }),
+    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'toggle_status', user_id: userId }) }),
 
   adminToggleUserRole: (userId) =>
-    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'toggle_role', user_id: userId }) }),
+    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'toggle_role', user_id: userId }) }),
 
   adminDeleteUser: (userId) =>
-    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'delete', user_id: userId }) }),
+    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'delete', user_id: userId }) }),
 };
