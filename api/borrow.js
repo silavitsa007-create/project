@@ -58,7 +58,7 @@ export default async function handler(req, res) {
     const user = await requireAuth(req, res);
     if (!user) return;
 
-    const action = req.query.action;
+    const action = req.method === 'GET' ? req.query.action : req.body?.action;
 
     if (action === 'request') return await handleRequest(req, res, user);
     if (action === 'my') return await handleMy(req, res, user);

@@ -78,7 +78,7 @@ async function handleMe(req, res) {
 
 export default async function handler(req, res) {
   try {
-    const action = req.query.action;
+    const action = req.method === 'GET' ? req.query.action : req.body?.action;
 
     if (action === 'register') return await handleRegister(req, res);
     if (action === 'login') return await handleLogin(req, res);

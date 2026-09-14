@@ -102,9 +102,8 @@ async function handleDashboard(req, res) {
 }
 
 // ===================== Borrow Requests =====================
-async function handleBorrowRequests(req, res, admin) {
+async function handleBorrowRequests(req, res, admin, body) {
   if (req.method === 'POST') {
-    const body = await readJsonBody(req);
     const { borrow_id, action } = body;
     if (!borrow_id || !['approve', 'reject'].includes(action)) {
       return res.status(400).json({ error: 'คำขอไม่ถูกต้อง' });
@@ -156,9 +155,8 @@ async function handleBorrowRequests(req, res, admin) {
 }
 
 // ===================== Returns =====================
-async function handleReturns(req, res, admin) {
+async function handleReturns(req, res, admin, body) {
   if (req.method === 'POST') {
-    const body = await readJsonBody(req);
     const { borrow_id } = body;
     if (!borrow_id) return res.status(400).json({ error: 'คำขอไม่ถูกต้อง' });
 
@@ -202,9 +200,8 @@ async function handleReturns(req, res, admin) {
 }
 
 // ===================== Books =====================
-async function handleBooks(req, res) {
+async function handleBooks(req, res, body) {
   if (req.method === 'POST') {
-    const body = await readJsonBody(req);
     const action = body.action;
 
     if (action === 'create' || action === 'update') {
@@ -266,9 +263,8 @@ async function handleBooks(req, res) {
 }
 
 // ===================== Categories =====================
-async function handleCategories(req, res) {
+async function handleCategories(req, res, body) {
   if (req.method === 'POST') {
-    const body = await readJsonBody(req);
     const { category_name } = body;
     if (!category_name) return res.status(400).json({ error: 'กรุณากรอกชื่อหมวดหมู่' });
     const { error } = await supabase.from('categories').insert({ category_name });
@@ -277,7 +273,6 @@ async function handleCategories(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const body = await readJsonBody(req);
     const { category_id } = body;
     const { count } = await supabase.from('books').select('*', { count: 'exact', head: true }).eq('category_id', category_id);
     if (count > 0) return res.status(400).json({ error: 'ไม่สามารถลบได้ เพราะมีหนังสือใช้หมวดหมู่นี้อยู่' });
@@ -292,11 +287,10 @@ async function handleCategories(req, res) {
 }
 
 // ===================== Users =====================
-async function handleUsers(req, res, admin) {
+async function handleUsers(req, res, admin, body) {
   const currentAdminId = admin.user_id;
 
   if (req.method === 'POST') {
-    const body = await readJsonBody(req);
     const action = body.action;
     const userId = body.user_id;
     if (!userId) return res.status(400).json({ error: 'ไม่พบสมาชิกที่ต้องการจัดการ' });
@@ -402,15 +396,27 @@ export default async function handler(req, res) {
     const admin = await requireAdminAuth(req, res);
     if (!admin) return;
 
-    const resource = req.query.resource;
+    // ----- upload-cover ตรวจจากประเภทไฟล์ (multipart) ไม่ใช่จาก query/body -----
+    const contentType = req.headers['content-type'] || '';
+    if (req.method === 'POST' && contentType.includes('multipart/form-data')) {
+      return await handleUploadCover(req, res);
+    }
+
+    let resource;
+    let body = {};
+    if (req.method === 'GET') {
+      resource = req.query.resource;
+    } else {
+      body = await readJsonBody(req);
+      resource = body.resource;
+    }
 
     if (resource === 'dashboard') return await handleDashboard(req, res);
-    if (resource === 'borrow-requests') return await handleBorrowRequests(req, res, admin);
-    if (resource === 'returns') return await handleReturns(req, res, admin);
-    if (resource === 'books') return await handleBooks(req, res);
-    if (resource === 'categories') return await handleCategories(req, res);
-    if (resource === 'users') return await handleUsers(req, res, admin);
-    if (resource === 'upload-cover') return await handleUploadCover(req, res);
+    if (resource === 'borrow-requests') return await handleBorrowRequests(req, res, admin, body);
+    if (resource === 'returns') return await handleReturns(req, res, admin, body);
+    if (resource === 'books') return await handleBooks(req, res, body);
+    if (resource === 'categories') return await handleCategories(req, res, body);
+    if (resource === 'users') return await handleUsers(req, res, admin, body);
 
     return res.status(404).json({ error: 'ไม่พบ resource นี้: ' + resource });
   } catch (err) {

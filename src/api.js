@@ -63,89 +63,90 @@ async function apiFetchForm(path, formData) {
 
 export const api = {
   register: (payload) =>
-    apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/auth', { method: 'POST', body: JSON.stringify({ action: 'register', ...payload }) }),
 
   login: (payload) =>
-    apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/auth', { method: 'POST', body: JSON.stringify({ action: 'login', ...payload }) }),
 
-  logout: () => apiFetch('/auth/logout', { method: 'POST' }),
+  logout: () => apiFetch('/auth', { method: 'POST', body: JSON.stringify({ action: 'logout' }) }),
 
-  me: () => apiFetch('/auth/me'),
+  me: () => apiFetch('/auth?action=me'),
 
   getBooks: (keyword = '', categoryId = '') => {
     const params = new URLSearchParams();
+    params.set('action', 'list');
     if (keyword) params.set('keyword', keyword);
     if (categoryId) params.set('category_id', categoryId);
-    return apiFetch(`/books/list?${params.toString()}`);
+    return apiFetch(`/books?${params.toString()}`);
   },
 
-  getBookDetail: (bookId) => apiFetch(`/books/detail?id=${bookId}`),
+  getBookDetail: (bookId) => apiFetch(`/books?action=detail&id=${bookId}`),
 
   requestBorrow: (bookId, requestedDays) =>
-    apiFetch('/borrow/request', {
+    apiFetch('/borrow', {
       method: 'POST',
-      body: JSON.stringify({ book_id: bookId, requested_days: requestedDays }),
+      body: JSON.stringify({ action: 'request', book_id: bookId, requested_days: requestedDays }),
     }),
 
-  myBorrows: () => apiFetch('/borrow/my'),
+  myBorrows: () => apiFetch('/borrow?action=my'),
 
   getProfile: () => apiFetch('/profile'),
 
   updateProfile: (payload) =>
     apiFetch('/profile', { method: 'POST', body: JSON.stringify(payload) }),
 
-  adminDashboard: () => apiFetch('/admin/dashboard'),
+  adminDashboard: () => apiFetch('/admin?resource=dashboard'),
 
-  adminBorrowRequests: () => apiFetch('/admin/borrow-requests'),
+  adminBorrowRequests: () => apiFetch('/admin?resource=borrow-requests'),
 
   adminDecideBorrow: (borrowId, action) =>
-    apiFetch('/admin/borrow-requests', {
+    apiFetch('/admin', {
       method: 'POST',
-      body: JSON.stringify({ borrow_id: borrowId, action }),
+      body: JSON.stringify({ resource: 'borrow-requests', borrow_id: borrowId, action }),
     }),
 
-  adminReturns: () => apiFetch('/admin/returns'),
+  adminReturns: () => apiFetch('/admin?resource=returns'),
 
   adminMarkReturned: (borrowId) =>
-    apiFetch('/admin/returns', { method: 'POST', body: JSON.stringify({ borrow_id: borrowId }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'returns', borrow_id: borrowId }) }),
 
-  adminGetBooks: () => apiFetch('/admin/books'),
+  adminGetBooks: () => apiFetch('/admin?resource=books'),
 
   adminAddBook: (payload) =>
-    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'create', ...payload }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'books', action: 'create', ...payload }) }),
 
   adminUpdateBook: (payload) =>
-    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'books', action: 'update', ...payload }) }),
 
   adminDeleteBook: (bookId) =>
-    apiFetch('/admin/books', { method: 'POST', body: JSON.stringify({ action: 'delete', book_id: bookId }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'books', action: 'delete', book_id: bookId }) }),
 
-  adminGetCategories: () => apiFetch('/admin/categories'),
+  adminGetCategories: () => apiFetch('/admin?resource=categories'),
 
   adminAddCategory: (categoryName) =>
-    apiFetch('/admin/categories', { method: 'POST', body: JSON.stringify({ category_name: categoryName }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'categories', category_name: categoryName }) }),
 
   adminDeleteCategory: (categoryId) =>
-    apiFetch('/admin/categories', { method: 'DELETE', body: JSON.stringify({ category_id: categoryId }) }),
+    apiFetch('/admin', { method: 'DELETE', body: JSON.stringify({ resource: 'categories', category_id: categoryId }) }),
 
   adminUploadCover: (bookId, file) => {
     const formData = new FormData();
     formData.append('book_id', bookId);
     formData.append('cover_image', file);
-    return apiFetchForm('/admin/upload-cover', formData);
+    return apiFetchForm('/admin', formData);
   },
 
-  adminGetUsers: () => apiFetch('/admin/users'),
+  adminGetUsers: () => apiFetch('/admin?resource=users'),
 
   adminUpdateUser: (payload) =>
-    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'users', action: 'update', ...payload }) }),
 
   adminToggleUserStatus: (userId) =>
-    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'toggle_status', user_id: userId }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'users', action: 'toggle_status', user_id: userId }) }),
 
   adminToggleUserRole: (userId) =>
-    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'toggle_role', user_id: userId }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'users', action: 'toggle_role', user_id: userId }) }),
 
   adminDeleteUser: (userId) =>
-    apiFetch('/admin/users', { method: 'POST', body: JSON.stringify({ action: 'delete', user_id: userId }) }),
+    apiFetch('/admin', { method: 'POST', body: JSON.stringify({ resource: 'users', action: 'delete', user_id: userId }) }),
 };
