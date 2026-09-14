@@ -84,7 +84,7 @@ async function handleDashboard(req, res) {
 
   const { data: recentRaw } = await supabase
     .from('borrow_transactions')
-    .select('borrow_id, request_date, users(full_name), books(title)')
+    .select('borrow_id, request_date, users!user_id(full_name), books(title)')
     .eq('status', 'pending').order('created_at', { ascending: false }).limit(5);
   const recent = (recentRaw || []).map((r) => ({
     borrow_id: r.borrow_id, request_date: r.request_date, full_name: r.users?.full_name, title: r.books?.title,
@@ -142,7 +142,7 @@ async function handleBorrowRequests(req, res, admin, body) {
 
   const { data, error } = await supabase
     .from('borrow_transactions')
-    .select('borrow_id, request_date, requested_days, users(full_name, phone), books(book_code, title, author)')
+    .select('borrow_id, request_date, requested_days, users!user_id(full_name, phone), books(book_code, title, author)')
     .eq('status', 'pending').order('request_date', { ascending: true });
   if (error) return res.status(500).json({ error: 'Query error: ' + error.message });
 
@@ -182,7 +182,7 @@ async function handleReturns(req, res, admin, body) {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from('borrow_transactions')
-    .select('borrow_id, approve_date, due_date, users(full_name, phone), books(book_code, title)')
+    .select('borrow_id, approve_date, due_date, users!user_id(full_name, phone), books(book_code, title)')
     .in('status', ['borrowed', 'overdue']).order('due_date', { ascending: true });
   if (error) return res.status(500).json({ error: 'Query error: ' + error.message });
 
