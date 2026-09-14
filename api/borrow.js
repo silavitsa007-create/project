@@ -1,5 +1,5 @@
-import { supabase } from '../../lib/supabase.js';
-import { requireAuth } from '../../lib/auth.js';
+import { supabase } from '../lib/supabase.js';
+import { requireAuth } from '../lib/auth.js';
 
 async function handleRequest(req, res, user) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -58,13 +58,12 @@ export default async function handler(req, res) {
     const user = await requireAuth(req, res);
     if (!user) return;
 
-    const slug = req.query.slug || [];
-    const route = slug[0];
+    const action = req.query.action;
 
-    if (route === 'request') return await handleRequest(req, res, user);
-    if (route === 'my') return await handleMy(req, res, user);
+    if (action === 'request') return await handleRequest(req, res, user);
+    if (action === 'my') return await handleMy(req, res, user);
 
-    return res.status(404).json({ error: 'ไม่พบ route นี้' });
+    return res.status(404).json({ error: 'ไม่พบ action นี้: ' + action });
   } catch (err) {
     return res.status(500).json({ error: 'Server crash: ' + err.message });
   }

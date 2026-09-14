@@ -1,9 +1,7 @@
-import { supabase } from '../../lib/supabase.js';
-import { requireAdminAuth } from '../../lib/auth.js';
+import { supabase } from '../lib/supabase.js';
+import { requireAdminAuth } from '../lib/auth.js';
 import { IncomingForm } from 'formidable';
 
-// ปิด body parser อัตโนมัติ เพราะ route "upload-cover" ต้องอ่าน multipart เอง
-// route อื่นๆ ในไฟล์นี้ต้อง parse JSON เองด้วย (ดูฟังก์ชัน readJsonBody ด้านล่าง)
 export const config = {
   api: { bodyParser: false },
 };
@@ -404,18 +402,17 @@ export default async function handler(req, res) {
     const admin = await requireAdminAuth(req, res);
     if (!admin) return;
 
-    const slug = req.query.slug || [];
-    const route = slug[0];
+    const resource = req.query.resource;
 
-    if (route === 'dashboard') return await handleDashboard(req, res);
-    if (route === 'borrow-requests') return await handleBorrowRequests(req, res, admin);
-    if (route === 'returns') return await handleReturns(req, res, admin);
-    if (route === 'books') return await handleBooks(req, res);
-    if (route === 'categories') return await handleCategories(req, res);
-    if (route === 'users') return await handleUsers(req, res, admin);
-    if (route === 'upload-cover') return await handleUploadCover(req, res);
+    if (resource === 'dashboard') return await handleDashboard(req, res);
+    if (resource === 'borrow-requests') return await handleBorrowRequests(req, res, admin);
+    if (resource === 'returns') return await handleReturns(req, res, admin);
+    if (resource === 'books') return await handleBooks(req, res);
+    if (resource === 'categories') return await handleCategories(req, res);
+    if (resource === 'users') return await handleUsers(req, res, admin);
+    if (resource === 'upload-cover') return await handleUploadCover(req, res);
 
-    return res.status(404).json({ error: 'ไม่พบ route นี้' });
+    return res.status(404).json({ error: 'ไม่พบ resource นี้: ' + resource });
   } catch (err) {
     return res.status(500).json({ error: 'Server crash: ' + err.message });
   }

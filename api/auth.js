@@ -1,5 +1,5 @@
-import { supabase } from '../../lib/supabase.js';
-import { requireAuth, getBearerToken } from '../../lib/auth.js';
+import { supabase } from '../lib/supabase.js';
+import { requireAuth, getBearerToken } from '../lib/auth.js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -78,15 +78,14 @@ async function handleMe(req, res) {
 
 export default async function handler(req, res) {
   try {
-    const slug = req.query.slug || [];
-    const route = slug[0];
+    const action = req.query.action;
 
-    if (route === 'register') return await handleRegister(req, res);
-    if (route === 'login') return await handleLogin(req, res);
-    if (route === 'logout') return await handleLogout(req, res);
-    if (route === 'me') return await handleMe(req, res);
+    if (action === 'register') return await handleRegister(req, res);
+    if (action === 'login') return await handleLogin(req, res);
+    if (action === 'logout') return await handleLogout(req, res);
+    if (action === 'me') return await handleMe(req, res);
 
-    return res.status(404).json({ error: 'ไม่พบ route นี้' });
+    return res.status(404).json({ error: 'ไม่พบ action นี้: ' + action });
   } catch (err) {
     return res.status(500).json({ error: 'Server crash: ' + err.message });
   }

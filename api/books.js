@@ -1,5 +1,5 @@
-import { supabase } from '../../lib/supabase.js';
-import { requireAuth } from '../../lib/auth.js';
+import { supabase } from '../lib/supabase.js';
+import { requireAuth } from '../lib/auth.js';
 
 async function handleList(req, res, user) {
   const { keyword = '', category_id = '' } = req.query;
@@ -69,13 +69,12 @@ export default async function handler(req, res) {
     const user = await requireAuth(req, res);
     if (!user) return;
 
-    const slug = req.query.slug || [];
-    const route = slug[0];
+    const action = req.query.action;
 
-    if (route === 'list') return await handleList(req, res, user);
-    if (route === 'detail') return await handleDetail(req, res, user);
+    if (action === 'list') return await handleList(req, res, user);
+    if (action === 'detail') return await handleDetail(req, res, user);
 
-    return res.status(404).json({ error: 'ไม่พบ route นี้' });
+    return res.status(404).json({ error: 'ไม่พบ action นี้: ' + action });
   } catch (err) {
     return res.status(500).json({ error: 'Server crash: ' + err.message });
   }
