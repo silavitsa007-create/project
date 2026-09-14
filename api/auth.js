@@ -17,10 +17,16 @@ async function handleRegister(req, res) {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('รูปแบบอีเมลไม่ถูกต้อง');
 
   if (errors.length === 0) {
-    const { data: existing, error: checkError } = await supabase
-      .from('users').select('user_id').or(`username.eq.${username},email.eq.${email}`);
-    if (checkError) return res.status(500).json({ error: 'DB check error: ' + checkError.message });
-    if (existing && existing.length > 0) errors.push('ชื่อผู้ใช้หรืออีเมลนี้ถูกใช้งานแล้ว');
+    const { data: existingUsername, error: checkError1 } = await supabase
+      .from('users').select('user_id').eq('username', username);
+    const { data: existingEmail, error: checkError2 } = await supabase
+      .from('users').select('user_id').eq('email', email);
+    if (checkError1 || checkError2) {
+      return res.status(500).json({ error: 'DB check error: ' + (checkError1 || checkError2).message });
+    }
+    if ((existingUsername && existingUsername.length > 0) || (existingEmail && existingEmail.length > 0)) {
+      errors.push('ชื่อผู้ใช้หรืออีเมลนี้ถูกใช้งานแล้ว');
+    }
   }
 
   if (errors.length > 0) return res.status(400).json({ error: errors.join(', ') });
