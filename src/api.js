@@ -63,36 +63,36 @@ async function apiFetchForm(path, formData) {
 
 export const api = {
   register: (payload) =>
-    apiFetch('/auth/register.php', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
 
   login: (payload) =>
-    apiFetch('/auth/login.php', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
 
-  logout: () => apiFetch('/auth/logout.php', { method: 'POST' }),
+  logout: () => apiFetch('/auth/logout', { method: 'POST' }),
 
-  me: () => apiFetch('/auth/me.php'),
+  me: () => apiFetch('/auth/me'),
 
   getBooks: (keyword = '', categoryId = '') => {
     const params = new URLSearchParams();
     if (keyword) params.set('keyword', keyword);
     if (categoryId) params.set('category_id', categoryId);
-    return apiFetch(`/books/list.php?${params.toString()}`);
+    return apiFetch(`/books/list?${params.toString()}`);
   },
 
-  getBookDetail: (bookId) => apiFetch(`/books/detail.php?id=${bookId}`),
+  getBookDetail: (bookId) => apiFetch(`/books/detail?id=${bookId}`),
 
   requestBorrow: (bookId, requestedDays) =>
-    apiFetch('/borrow/request.php', {
+    apiFetch('/borrow/request', {
       method: 'POST',
       body: JSON.stringify({ book_id: bookId, requested_days: requestedDays }),
     }),
 
-  myBorrows: () => apiFetch('/borrow/my.php'),
+  myBorrows: () => apiFetch('/borrow/my'),
 
-  getProfile: () => apiFetch('/profile/index.php'),
+  getProfile: () => apiFetch('/profile'),
 
   updateProfile: (payload) =>
-    apiFetch('/profile/index.php', { method: 'POST', body: JSON.stringify(payload) }),
+    apiFetch('/profile', { method: 'POST', body: JSON.stringify(payload) }),
 
   adminDashboard: () => apiFetch('/admin/dashboard.php'),
 

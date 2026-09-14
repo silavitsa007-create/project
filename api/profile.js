@@ -1,5 +1,5 @@
-import { supabase } from '../../lib/supabase.js';
-import { requireAuth } from '../../lib/auth.js';
+import { supabase } from '../lib/supabase.js';
+import { requireAuth } from '../lib/auth.js';
 import bcrypt from 'bcryptjs';
 
 export default async function handler(req, res) {
