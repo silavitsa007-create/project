@@ -18,11 +18,25 @@ async function apiFetch(path, options = {}) {
     ...(options.headers || {}),
   };
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  } catch (networkErr) {
+    throw new Error('Network error: ' + networkErr.message);
+  }
+
+  const text = await res.text();
+  let data = {};
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error(`ไม่ใช่ JSON (status ${res.status}): ${text.slice(0, 300)}`);
+    }
+  }
 
   if (!res.ok) {
-    throw new Error(data.error || 'เกิดข้อผิดพลาด');
+    throw new Error(data.error || `HTTP ${res.status} error (ไม่มีข้อความ error จากเซิร์ฟเวอร์)`);
   }
   return data;
 }
