@@ -1,0 +1,138 @@
+// เรียก API ผ่าน path เดียวกับที่เว็บรันอยู่ (Node.js Serverless Function
+// อยู่ในโปรเจกต์ Vercel เดียวกันเลย ไม่ต้องข้ามโดเมน ไม่มีปัญหา CORS)
+const API_BASE = '/api';
+
+// ที่อยู่ไฟล์รูปภาพ (โลโก้/ปกหนังสือ) เก็บอยู่ใน Supabase Storage bucket ชื่อ "uploads"
+// เปลี่ยนตัวเลข/ชื่อโปรเจกต์ให้ตรงกับของคุณถ้าย้าย Supabase project ในอนาคต
+export const ASSET_BASE = 'https://kvvtsjylohwjmdznlrke.supabase.co/storage/v1/object/public/uploads';
+
+/**
+ * เรียก API กลาง แนบ token อัตโนมัติถ้ามี (เก็บไว้ใน localStorage)
+ */
+async function apiFetch(path, options = {}) {
+  const token = localStorage.getItem('token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(options.headers || {}),
+  };
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.error || 'เกิดข้อผิดพลาด');
+  }
+  return data;
+}
+
+/**
+ * เรียก API แบบส่งไฟล์ (multipart/form-data) — ไม่ตั้ง Content-Type เอง
+ * เพราะเบราว์เซอร์ต้องเป็นคนกำหนด boundary ให้อัตโนมัติ
+ */
+async function apiFetchForm(path, formData) {
+  const token = localStorage.getItem('token');
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.error || 'เกิดข้อผิดพลาด');
+  }
+  return data;
+}
+
+export const api = {
+  register: (payload) =>
+    apiFetch('/auth/register.php', { method: 'POST', body: JSON.stringify(payload) }),
+
+  login: (payload) =>
+    apiFetch('/auth/login.php', { method: 'POST', body: JSON.stringify(payload) }),
+
+  logout: () => apiFetch('/auth/logout.php', { method: 'POST' }),
+
+  me: () => apiFetch('/auth/me.php'),
+
+  getBooks: (keyword = '', categoryId = '') => {
+    const params = new URLSearchParams();
+    if (keyword) params.set('keyword', keyword);
+    if (categoryId) params.set('category_id', categoryId);
+    return apiFetch(`/books/list.php?${params.toString()}`);
+  },
+
+  getBookDetail: (bookId) => apiFetch(`/books/detail.php?id=${bookId}`),
+
+  requestBorrow: (bookId, requestedDays) =>
+    apiFetch('/borrow/request.php', {
+      method: 'POST',
+      body: JSON.stringify({ book_id: bookId, requested_days: requestedDays }),
+    }),
+
+  myBorrows: () => apiFetch('/borrow/my.php'),
+
+  getProfile: () => apiFetch('/profile/index.php'),
+
+  updateProfile: (payload) =>
+    apiFetch('/profile/index.php', { method: 'POST', body: JSON.stringify(payload) }),
+
+  adminDashboard: () => apiFetch('/admin/dashboard.php'),
+
+  adminBorrowRequests: () => apiFetch('/admin/borrow_requests.php'),
+
+  adminDecideBorrow: (borrowId, action) =>
+    apiFetch('/admin/borrow_requests.php', {
+      method: 'POST',
+      body: JSON.stringify({ borrow_id: borrowId, action }),
+    }),
+
+  adminReturns: () => apiFetch('/admin/returns.php'),
+
+  adminMarkReturned: (borrowId) =>
+    apiFetch('/admin/returns.php', { method: 'POST', body: JSON.stringify({ borrow_id: borrowId }) }),
+
+  adminGetBooks: (keyword = '') =>
+    apiFetch(`/admin/books.php?keyword=${encodeURIComponent(keyword)}`),
+
+  adminAddBook: (payload) =>
+    apiFetch('/admin/books.php', { method: 'POST', body: JSON.stringify(payload) }),
+
+  adminUpdateBook: (payload) =>
+    apiFetch('/admin/books.php', { method: 'PUT', body: JSON.stringify(payload) }),
+
+  adminDeleteBook: (bookId) =>
+    apiFetch('/admin/books.php', { method: 'DELETE', body: JSON.stringify({ book_id: bookId }) }),
+
+  adminGetCategories: () => apiFetch('/admin/categories.php'),
+
+  adminAddCategory: (categoryName) =>
+    apiFetch('/admin/categories.php', { method: 'POST', body: JSON.stringify({ category_name: categoryName }) }),
+
+  adminDeleteCategory: (categoryId) =>
+    apiFetch('/admin/categories.php', { method: 'DELETE', body: JSON.stringify({ category_id: categoryId }) }),
+
+  adminUploadCover: (bookId, file) => {
+    const formData = new FormData();
+    formData.append('book_id', bookId);
+    formData.append('cover_image', file);
+    return apiFetchForm('/admin/upload_cover.php', formData);
+  },
+
+  adminGetUsers: () => apiFetch('/admin/users.php'),
+
+  adminUpdateUser: (payload) =>
+    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'update', ...payload }) }),
+
+  adminToggleUserStatus: (userId) =>
+    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'toggle_status', user_id: userId }) }),
+
+  adminToggleUserRole: (userId) =>
+    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'toggle_role', user_id: userId }) }),
+
+  adminDeleteUser: (userId) =>
+    apiFetch('/admin/users.php', { method: 'POST', body: JSON.stringify({ action: 'delete', user_id: userId }) }),
+};
