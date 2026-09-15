@@ -56,6 +56,7 @@ export default function MyBorrows() {
           <table className="book-table">
             <thead>
               <tr>
+                <th>ลำดับ</th>
                 <th>รหัสหนังสือ</th>
                 <th>ชื่อหนังสือ</th>
                 <th>วันที่ขอยืม</th>
@@ -65,10 +66,11 @@ export default function MyBorrows() {
               </tr>
             </thead>
             <tbody>
-              {borrows.map((b) => {
+              {borrows.map((b, index) => {
                 const [label, badgeClass] = statusLabel(b.status, b.due_date);
                 return (
                   <tr key={b.borrow_id}>
+                    <td>{borrows.length - index}</td>
                     <td>{b.book_code}</td>
                     <td>{b.title}</td>
                     <td>{formatThaiDate(b.request_date)}</td>

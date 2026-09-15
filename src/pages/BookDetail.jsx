@@ -95,7 +95,7 @@ export default function BookDetail() {
             {book.description && (
               <div style={{ marginBottom: 22 }}>
                 <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 6 }}>รายละเอียดเพิ่มเติม</div>
-                <div style={{ fontSize: 14, color: '#334155', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                <div className="book-detail-description">
                   {book.description}
                 </div>
               </div>

@@ -928,3 +928,24 @@ html.dark-mode .switch-link {
     gap: 6px;
     margin-left: 10px;
 }
+
+.book-title-link {
+    color: #1e293b;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+html.dark-mode .book-title-link {
+    color: #f1f5f9;
+}
+
+.book-detail-description {
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+html.dark-mode .book-detail-description {
+    color: #cbd5e1;
+}

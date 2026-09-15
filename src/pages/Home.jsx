@@ -124,7 +124,7 @@ export default function Home() {
                   </td>
                   <td>{book.book_code}</td>
                   <td>
-                    <Link to={`/books/${book.book_id}`} style={{ color: '#1e293b', fontWeight: 600, textDecoration: 'none' }}>
+                    <Link to={`/books/${book.book_id}`} className="book-title-link">
                       {book.title}
                     </Link>
                   </td>
