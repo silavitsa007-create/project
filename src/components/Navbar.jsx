@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getSavedTheme, applyTheme } from '../theme';
 import logo from '../assets/logo.png';
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showQR, setShowQR] = useState(false);
+  const [isDark, setIsDark] = useState(getSavedTheme() === 'dark');
+
+  function toggleTheme() {
+    const next = isDark ? 'light' : 'dark';
+    applyTheme(next);
+    setIsDark(!isDark);
+  }
 
   async function handleLogout() {
     await logout();
@@ -60,6 +68,9 @@ export function Navbar() {
             }}
           >
             📱 QR Code
+          </button>
+          <button type="button" onClick={toggleTheme} className="theme-toggle-btn" title="สลับโหมดสว่าง/มืด">
+            {isDark ? '☀️ โหมดสว่าง' : '🌙 โหมดมืด'}
           </button>
           <a href="#" onClick={handleLogout}>ออกจากระบบ</a>
         </div>

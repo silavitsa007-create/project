@@ -794,3 +794,137 @@ body {
         white-space: nowrap;
     }
 }
+
+/* =====================================================
+   โหมดกลางคืน (Dark Mode)
+   เปิดใช้งานด้วยการเพิ่ม class "dark-mode" ที่ <html>
+   ===================================================== */
+html.dark-mode body {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+html.dark-mode .app {
+    background:
+        radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.12), transparent 42%),
+        radial-gradient(circle at 100% 0%, rgba(124, 58, 237, 0.1), transparent 38%),
+        #0f172a;
+}
+
+html.dark-mode .auth-box,
+html.dark-mode .book-detail,
+html.dark-mode .chart-card,
+html.dark-mode .dash-ring-card,
+html.dark-mode .book-table {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+html.dark-mode .auth-box h2,
+html.dark-mode .page-intro h1,
+html.dark-mode .section-title,
+html.dark-mode .book-detail-info h1,
+html.dark-mode .chart-card-title,
+html.dark-mode h1, html.dark-mode h2, html.dark-mode h3 {
+    color: #f1f5f9;
+}
+
+html.dark-mode .page-intro p,
+html.dark-mode .auth-subtitle,
+html.dark-mode .book-detail-info .author,
+html.dark-mode .bar-row .bar-label,
+html.dark-mode small {
+    color: #94a3b8;
+}
+
+html.dark-mode .form-group label {
+    color: #cbd5e1;
+}
+
+html.dark-mode .form-group input,
+html.dark-mode .form-group select,
+html.dark-mode .search-box input[type="text"],
+html.dark-mode .search-box select {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+html.dark-mode .form-group input:focus,
+html.dark-mode .form-group select:focus {
+    border-color: #3b82f6;
+}
+
+html.dark-mode .book-table th {
+    background: #0f172a;
+    color: #cbd5e1;
+}
+
+html.dark-mode .book-table th, html.dark-mode .book-table td {
+    border-color: #334155;
+}
+
+html.dark-mode .book-table tbody tr:hover {
+    background: #273449;
+}
+
+html.dark-mode .stat-card,
+html.dark-mode .dash-ring-card {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+html.dark-mode .stat-card .stat-label,
+html.dark-mode .dash-ring-card .label {
+    color: #94a3b8;
+}
+
+html.dark-mode .empty-state {
+    background: #1e293b;
+    color: #64748b;
+    border-color: #334155;
+}
+
+html.dark-mode .bar-track {
+    background: #334155;
+}
+
+html.dark-mode .book-detail-cover-placeholder {
+    background: #334155;
+}
+
+html.dark-mode .alert-error {
+    background: #450a0a;
+    color: #fca5a5;
+    border-color: #7f1d1d;
+}
+
+html.dark-mode .alert-success {
+    background: #052e16;
+    color: #86efac;
+    border-color: #14532d;
+}
+
+html.dark-mode .back-link {
+    color: #60a5fa;
+}
+
+html.dark-mode .switch-link {
+    color: #94a3b8;
+}
+
+/* ปุ่มสลับโหมด */
+.theme-toggle-btn {
+    background: none;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+}
