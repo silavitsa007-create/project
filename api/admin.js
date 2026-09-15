@@ -377,9 +377,9 @@ async function handleUploadCover(req, res) {
   const fs = await import('fs');
   const buffer = fs.readFileSync(file.filepath);
   const ext = file.originalFilename.split('.').pop();
-  const filename = `books/book_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const filename = `book_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-  const { error: uploadError } = await supabase.storage.from('uploads').upload(filename, buffer, {
+  const { error: uploadError } = await supabase.storage.from('books').upload(filename, buffer, {
     contentType: file.mimetype, upsert: true,
   });
   if (uploadError) return res.status(500).json({ error: 'Upload error: ' + uploadError.message });
