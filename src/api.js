@@ -4,7 +4,7 @@ const API_BASE = '/api';
 
 // ที่อยู่ไฟล์รูปภาพ (โลโก้/ปกหนังสือ) เก็บอยู่ใน Supabase Storage bucket ชื่อ "uploads"
 // เปลี่ยนตัวเลข/ชื่อโปรเจกต์ให้ตรงกับของคุณถ้าย้าย Supabase project ในอนาคต
-export const ASSET_BASE = 'https://kvvtsjylohwjmdznlrke.supabase.co/storage/v1/object/public/uploads';
+export const ASSET_BASE = 'https://kvvtsjylohwjmdznlrke.supabase.co/storage/v1/object/public/books';
 
 /**
  * เรียก API กลาง แนบ token อัตโนมัติถ้ามี (เก็บไว้ใน localStorage)
