@@ -10,16 +10,21 @@ export default function AdminDashboard() {
   const [statusBreakdown, setStatusBreakdown] = useState([]);
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  function load(silent = false) {
-    return api.adminDashboard().then((data) => {
+  async function load(silent = false) {
+    try {
+      const data = await api.adminDashboard();
       setStats(data.stats);
       setPopularBooks(data.popular_books);
       setStatusBreakdown(data.status_breakdown);
       setRecent(data.recent_requests);
-    }).finally(() => {
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
       if (!silent) setLoading(false);
-    });
+    }
   }
 
   useEffect(() => {
@@ -35,6 +40,19 @@ export default function AdminDashboard() {
       <div className="app">
         <Navbar />
         <div className="container"><div className="empty-state">กำลังโหลด...</div></div>
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="app">
+        <Navbar />
+        <div className="container">
+          <div className="alert alert-error">
+            โหลดข้อมูลไม่สำเร็จ: {error || 'ไม่มีข้อมูล'}
+          </div>
+        </div>
       </div>
     );
   }
@@ -156,9 +174,63 @@ export default function AdminDashboard() {
         </div>
 
         {stats.pending_count > 0 && (
-          <div className="alert alert-error">
-            มีคำขอยืมหนังสือรออนุมัติ {stats.pending_count} รายการ
-            <Link to="/admin/borrow-requests" style={{ fontWeight: 'bold', marginLeft: 6 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 14,
+              background: 'linear-gradient(135deg, #fff7ed, #fef2f2)',
+              border: '1px solid #fecaca',
+              borderRadius: 12,
+              padding: '16px 20px',
+              marginBottom: 20,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: '#fee2e2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 20,
+                  flexShrink: 0,
+                }}
+              >
+                🔔
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, color: '#991b1b', fontSize: 15 }}>
+                  มีคำขอยืมหนังสือรออนุมัติ {stats.pending_count} รายการ
+                </div>
+                <div style={{ fontSize: 13, color: '#b45309' }}>
+                  กรุณาตรวจสอบและดำเนินการโดยเร็ว
+                </div>
+              </div>
+            </div>
+
+            <Link
+              to="/admin/borrow-requests"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: '#dc2626',
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: 14,
+                padding: '10px 18px',
+                borderRadius: 8,
+                boxShadow: '0 2px 6px rgba(220,38,38,0.3)',
+                whiteSpace: 'nowrap',
+              }}
+            >
               ไปจัดการเลย →
             </Link>
           </div>
