@@ -126,7 +126,7 @@ export default function ManageUsers() {
         {form && (
           <>
             <h2 className="section-title" style={{ marginTop: 0 }}>แก้ไขข้อมูล: {form.full_name}</h2>
-            <div className="auth-box" style={{ margin: '0 0 24px 0', width: '100%', maxWidth: 700 }}>
+            <div className="auth-box" style={{ margin: '0 auto 24px auto', width: '100%', maxWidth: 700 }}>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label>ชื่อผู้ใช้ (Username)</label>

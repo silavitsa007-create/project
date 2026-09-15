@@ -143,7 +143,7 @@ export default function ManageBooks() {
           {isEditing ? `แก้ไขหนังสือ: ${form.title}` : 'เพิ่มหนังสือใหม่'}
         </h2>
 
-        <div className="auth-box" style={{ margin: '0 0 24px 0', width: '100%', maxWidth: 700 }}>
+        <div className="auth-box" style={{ margin: '0 auto 24px auto', width: '100%', maxWidth: 700 }}>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>รูปปกหนังสือ</label>
@@ -230,16 +230,9 @@ export default function ManageBooks() {
           </form>
         </div>
 
-        <div
-          style={{
-            background: '#fff',
-            border: '1px solid #e5e9f0',
-            borderRadius: 12,
-            padding: 18,
-            marginBottom: 24,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <h2 className="section-title" style={{ margin: 0 }}>รายการหนังสือทั้งหมด ({books.length} เล่ม)</h2>
+
           {!showAddCategory ? (
             <button
               type="button"
@@ -257,62 +250,69 @@ export default function ManageBooks() {
                 fontWeight: 600,
                 cursor: 'pointer',
                 boxShadow: '0 2px 6px rgba(37,99,235,0.25)',
+                whiteSpace: 'nowrap',
               }}
             >
               <span style={{ fontSize: 16, lineHeight: 1 }}>+</span> เพิ่มหมวดหมู่ใหม่
             </button>
           ) : (
-            <>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#1e293b', marginBottom: 12 }}>
-                เพิ่มหมวดหมู่ใหม่
-              </div>
-              <form onSubmit={handleAddCategory} style={{ display: 'flex', gap: 10, maxWidth: 440 }}>
-                <input
-                  type="text"
-                  placeholder="ชื่อหมวดหมู่ใหม่"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  autoFocus
-                  required
-                  style={{ flex: 1, padding: '10px 12px', border: '1px solid #ccc', borderRadius: 8, fontSize: 14 }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    background: '#1e8449',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 8,
-                    padding: '10px 20px',
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  บันทึก
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setShowAddCategory(false); setNewCategory(''); }}
-                  style={{
-                    background: '#f1f5f9',
-                    color: '#475569',
-                    border: 'none',
-                    borderRadius: 8,
-                    padding: '10px 16px',
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  ยกเลิก
-                </button>
-              </form>
-            </>
+            <form
+              onSubmit={handleAddCategory}
+              style={{
+                display: 'flex',
+                gap: 10,
+                background: '#fff',
+                border: '1px solid #e5e9f0',
+                borderRadius: 12,
+                padding: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              }}
+            >
+              <input
+                type="text"
+                placeholder="ชื่อหมวดหมู่ใหม่"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                autoFocus
+                required
+                style={{ padding: '9px 12px', border: '1px solid #ccc', borderRadius: 8, fontSize: 14, width: 200 }}
+              />
+              <button
+                type="submit"
+                style={{
+                  background: '#1e8449',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '9px 18px',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                บันทึก
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowAddCategory(false); setNewCategory(''); }}
+                style={{
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '9px 16px',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ยกเลิก
+              </button>
+            </form>
           )}
         </div>
-
-        <h2 className="section-title">รายการหนังสือทั้งหมด ({books.length} เล่ม)</h2>
 
         {loading ? (
           <div className="empty-state">กำลังโหลด...</div>
