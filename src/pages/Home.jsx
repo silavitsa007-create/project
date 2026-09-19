@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { api, ASSET_BASE } from '../api';
@@ -11,6 +11,13 @@ export default function Home() {
   const [flash, setFlash] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedDays, setSelectedDays] = useState({}); // { [book_id]: days }
+
+  // เก็บค่าล่าสุดไว้ใน ref เพื่อให้ setInterval อ่านค่าปัจจุบันได้เสมอ
+  // (ถ้าใช้ keyword/categoryId ตรงๆ ใน interval จะได้ค่าตอน mount ครั้งแรกค้างตลอดไป)
+  const keywordRef = useRef(keyword);
+  const categoryIdRef = useRef(categoryId);
+  useEffect(() => { keywordRef.current = keyword; }, [keyword]);
+  useEffect(() => { categoryIdRef.current = categoryId; }, [categoryId]);
 
   async function loadBooks(kw = keyword, cat = categoryId, silent = false) {
     if (!silent) setLoading(true);
@@ -26,8 +33,11 @@ export default function Home() {
   useEffect(() => {
     loadBooks();
 
-    // ----- ดึงข้อมูลใหม่แบบเงียบๆ ทุก 15 วินาที ไม่ต้องกดรีเฟรชเอง -----
-    const interval = setInterval(() => loadBooks(keyword, categoryId, true), 15000);
+    // ----- ดึงข้อมูลใหม่แบบเงียบๆ ทุก 15 วินาที โดยใช้คำค้นหาล่าสุดจาก ref เสมอ -----
+    const interval = setInterval(
+      () => loadBooks(keywordRef.current, categoryIdRef.current, true),
+      15000
+    );
     return () => clearInterval(interval);
   }, []);
 
