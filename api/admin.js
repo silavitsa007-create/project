@@ -230,6 +230,13 @@ async function handleBooks(req, res, body) {
         const { data: old } = await supabase.from('books').select('total_copies, available_copies').eq('book_id', book_id).single();
         if (!old) return res.status(404).json({ error: 'ไม่พบหนังสือเล่มนี้' });
 
+        const borrowedNow = old.total_copies - old.available_copies;
+        if (totalCopies < borrowedNow) {
+          return res.status(400).json({
+            error: `ไม่สามารถตั้งจำนวนทั้งหมดต่ำกว่าจำนวนที่ถูกยืมอยู่ตอนนี้ได้ (ถูกยืมอยู่ ${borrowedNow} เล่ม)`,
+          });
+        }
+
         const diff = totalCopies - old.total_copies;
         const newAvailable = Math.max(0, old.available_copies + diff);
 
