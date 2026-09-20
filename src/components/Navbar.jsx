@@ -31,7 +31,7 @@ export function Navbar() {
     <>
       <div className="navbar">
         <div className="brand">
-          <img src={logo} alt="โลโก้" className="navbar-logo" /> ระบบยืม-คืนหนังสือ ภายในวิทยาลัยอุดมศึกษาพณิชยการ {isAdmin && <span className="admin-badge">ADMIN</span>}
+          <img src={logo} alt="โลโก้" className="navbar-logo" /> ระบบยืม-คืนหนังสือ ภายในวิทยาลัยเทคโนโลยีอุดมศึกษาพณิชยการ {isAdmin && <span className="admin-badge">ADMIN</span>}
         </div>
         <div className="nav-links">
           <span>สวัสดี, {user.full_name}</span>
